@@ -6,7 +6,7 @@ app = Flask(__name__)
 def index():
     return "Flassh Template"
 
-print("erorr")
+print("erorr testy 2")
 
 if __name__ == "__main__":
     app.run(debug=True)
