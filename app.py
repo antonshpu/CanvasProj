@@ -6,5 +6,7 @@ app = Flask(__name__)
 def index():
     return "Flash Template"
 
+print("hello")
+
 if __name__ == "__main__":
     app.run(debug=True)
