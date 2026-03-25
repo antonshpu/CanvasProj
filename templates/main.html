@@ -1,0 +1,27 @@
+
+<html> 
+    <head>
+        <title>Main page</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    
+    </head>
+    <body>
+        <nav class="nav_frame">
+            <ul class="nav_links">
+                <li><a href="#Class Selection" class = "link-button">Class Selection</a></li>
+                <li><a href="#Grading Schema Editor" class = "link-button" >Grading Schema Editor</a></li>
+                <li><a href="#Student Grade Spreadsheet Viewer" class = "link-button">Student Grades Table</a></li>
+            </ul>
+        </nav>
+
+        <div class="Class-Selection">
+            <button class="course-title">Select Course View</button>
+            <button class="course-button">CSCA48</button>
+            <button class="course-button">CSCA67</button>
+            <button class="course-button">MATA22</button>
+            <button class="course-button" id = "new-course-add">Add new course...</button>
+
+        </div>
+
+    </body>
+</html>

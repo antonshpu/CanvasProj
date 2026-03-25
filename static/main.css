@@ -1,0 +1,105 @@
+.nav_frame {
+    display: flex;
+    justify-content: center;
+    align-items:start;
+    background: linear-gradient(to right, #7ba8d4, #106977);
+    padding: 1rem 2rem;
+}
+
+.nav_links {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav_links a{
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav_links li{
+    margin-left: 20px;
+}
+
+.link-button{
+    display: inline-block;
+    text-decoration: none;
+    background-color:rgb(15, 161, 161);
+    padding: 15px 25px;
+    border-radius: 8px;
+    color:aqua;
+    font-size: 18px;
+    font-family: 'Comic Sans';
+    font-weight: 200;
+    transition: all 0.2s ease !important;
+}
+
+
+.link-button:hover{
+    transform: scale(1.05);
+    padding: 17px 25px;
+    background-color:rgb(27, 122, 122);
+}
+
+.class-selection{
+    display: flex;
+    flex-direction: column;
+    background-color:rgb(169, 229, 240);
+    border-radius: 30px;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+
+    position: relative; 
+    margin: 150px auto 0 auto;
+
+    width: 500px;
+    height: max-content;
+}
+
+.course-button{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-decoration: none;
+    background-color:rgb(15, 161, 161);
+    padding: 15px 120px;
+    border-radius: 8px;
+    color:rgb(255, 255, 255);
+    font-size: 25px;
+    font-family: 'Comic Sans';
+    font-weight: 300;
+    transition: all 0.2s ease !important;
+    border-color:#699dec;
+    border-radius: 30px;
+}
+
+.course-title{
+    display: flex;
+    text-decoration: none;
+    padding: 15px 120px;
+    color:rgb(0, 0, 0);
+    background-color:rgb(87, 139, 235);
+    font-size: 35px;
+    font-family: 'Impact';
+    font-weight: 400;
+    border-color:#69a6ec;
+    border-radius: 30px;
+}
+
+.course-button:hover{
+    transform: scale(1.05);
+    padding: 16px 125px;
+    background-color:rgb(27, 122, 122);
+}
+
+.link-button:hover{
+    transform: scale(1.05);
+    padding: 17px 25px;
+    background-color:rgb(50, 119, 119);
+    border-radius: 5px;
+}

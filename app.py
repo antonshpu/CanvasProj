@@ -1,16 +1,10 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "Flsassh Template"
-
-print("erorr testy 2")
-
-print("hello c")
-
-print("hello c")
+    return render_template('main.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
