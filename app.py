@@ -8,5 +8,7 @@ def index():
 
 print("hello c")
 
+print("changes")
+
 if __name__ == "__main__":
     app.run(debug=True)
