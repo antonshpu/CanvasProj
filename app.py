@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify, session, render_template
+import sqlite3
 
 app = Flask(__name__)
 
 app.secret_key = 'TimTimTimSahur'
-
-# switch to sql stuff pls
 
 current_courses = [ # these will be mapped to a specific user
         {"code": "CSCA67", "name": "Discrete Mathematics"},
@@ -58,5 +57,65 @@ def remove_course():
     
     return jsonify(["Successful course removal"])
 
+#profs can see users data from here
+@app.route('/api/users')
+def get_users():
+    conn = sqlite3.connect("app.db")
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
+    rows = cur.execute("SELECT * FROM users").fetchall()
+    
+    print("ROWS:", rows)
+    
+    conn.close()
+
+    return jsonify([dict(row) for row in rows])
+
+
+def init_db():
+    conn = sqlite3.connect("app.db")
+    cur = conn.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        crowdmark_id INTEGER PRIMARY KEY,
+        score_url TEXT NOT NULL UNIQUE,
+        email TEXT NOT NULL UNIQUE,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        student_id TEXT NOT NULL UNIQUE,
+        section TEXT NOT NULL
+    );
+                """)
+
+    # working for B20 format currently
+
+    skills = ["RM", "ERD", "RA", "SQL_DDL", "SQL_Base", "SQL_Adv", "HTML", "CSS"]
+
+    for i in skills:
+        try:
+            cur.execute(f"""
+            ALTER TABLE users ADD COLUMN {i} DECIMAL(5, 2) DEFAULT 0.00;
+                        """)
+        except:
+            pass
+
+
+    #clear previous data
+    cur.execute("DELETE FROM users;")
+
+    #testing input into users
+    cur.execute("""
+                INSERT INTO users (crowdmark_id, score_url, email, first_name, last_name, student_id, section)
+    VALUES
+    (1, 'url1', 'tim@example.com', 'Tim', 'Tester', '1000000000', 'L01'),
+    (2, 'url2', 'amy@example.com', 'Amy', 'Anderson', '1000000001', 'L01'),
+    (3, 'url3', 'bob@example.com', 'Bob', 'Brown', '1000000002', 'L02');
+            """)
+    conn.commit()
+    conn.close()
+
 if __name__ == "__main__":
+    init_db()
     app.run(debug=True)
