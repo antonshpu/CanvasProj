@@ -1,4 +1,5 @@
 
+<!DOCTYPE html>
 <html> 
     <head>
         <title>Main page</title>
@@ -8,20 +9,24 @@
     <body>
         <nav class="nav_frame">
             <ul class="nav_links">
-                <li><a href="#Class Selection" class = "link-button">Class Selection</a></li>
-                <li><a href="#Grading Schema Editor" class = "link-button" >Grading Schema Editor</a></li>
-                <li><a href="#Student Grade Spreadsheet Viewer" class = "link-button">Student Grades Table</a></li>
+                <li><a href="#" class = "link-button" d-path="/main/Class&20Selector">Class Selection</a></li>
+                <li><a href="#" class = "link-button" d-path="/main/Grading%20Schema%20Editor">Grading Schema Editor</a></li>
+                <li><a href="#" class = "link-button" d-path="/main/Student%20Grade%20Spreadsheet%20Viewer">Student Grades Table</a></li>
             </ul>
         </nav>
 
-        <div class="Class-Selection">
-            <button class="course-title">Select Course View</button>
-            <button class="course-button">CSCA48</button>
-            <button class="course-button">CSCA67</button>
-            <button class="course-button">MATA22</button>
-            <button class="course-button" id = "new-course-add">Add new course...</button>
-
+        <div class="hidden" id = "course-selector">
+            <div class="class-selection" id = "visual-course-box">
+                <button class="course-title">Select Course View</button>
+                {% for course in courses %}
+                    <button class="course-button">
+                        {{ course.code }} : {{ course.name }}
+                    </button>
+                {% endfor %}
+                <button class="course-button" id = "new-course-add">Add new course...</button>
+            </div>
         </div>
 
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
 </html>

@@ -38,15 +38,8 @@
     transition: all 0.2s ease !important;
 }
 
-
-.link-button:hover{
-    transform: scale(1.05);
-    padding: 17px 25px;
-    background-color:rgb(27, 122, 122);
-}
-
 .class-selection{
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     background-color:rgb(169, 229, 240);
     border-radius: 30px;
@@ -55,10 +48,14 @@
     gap: 15px;
 
     position: relative; 
-    margin: 150px auto 0 auto;
+    margin: 75px auto 0 auto;
 
     width: 500px;
     height: max-content;
+}
+
+.hidden {
+    display: none !important;
 }
 
 .course-button{
