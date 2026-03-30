@@ -19,13 +19,13 @@ course_codes_to_names = {
 
 @app.route('/')
 def index():
-    return render_template('main.html')
+    return render_template('main.html', courses=current_courses)
 
 # this resets the path to whatever you were on
 # when you reload the page
 @app.route('/main/<path:subpath>')
 def catch_all(subpath=None):
-    return render_template('main.html')
+    return render_template('main.html', courses=current_courses)
 
 @app.route('/api/courses')
 def class_selector():
@@ -58,8 +58,8 @@ def remove_course():
     return jsonify(["Successful course removal"])
 
 #profs can see users data from here
-@app.route('/api/users')
-def get_users():
+@app.route('/api/grades')
+def get_grades():
     conn = sqlite3.connect("app.db")
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()

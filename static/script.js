@@ -94,13 +94,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function route(){
-    path = decodeURIComponent(window.location.pathname);
-    frame = document.getElementById("course-selector");
+    const path = decodeURIComponent(window.location.pathname);
+    const frame = document.getElementById("course-selector");
+    const grade_frame = document.getElementById("student-grades");
+
+    frame.classList.add("hidden");
+    grade_frame.classList.add("hidden");
 
     if (path.includes("/main/Class&20Selector")){
         load_courses();
-    } else{
-        frame.classList.add("hidden");
+    } else if (path.includes("Student Grade Spreadsheet Viewer")){
+        grade_frame.classList.remove("hidden");
+        load_grades();
     }
 }
 
@@ -116,5 +121,58 @@ document.addEventListener("click", (e) => {
 });
 
 window.addEventListener("DOMContentLoaded", route);
+
+async function load_grades(){
+    const frame = document.getElementById("student-grades");
+    frame.classList.remove("hidden");
+
+    const response = await fetch('/api/grades');
+    const users = await response.json();
+
+    frame.innerHTML = "";
+
+    const table = document.createElement("table");
+
+    const header =`
+        <tr>
+            <th>Student ID </th>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Section</th>
+            <th>RM</th>
+            <th>ERD</th>
+            <th>RA</th>
+            <th>SQL_DDL</th>
+            <th>SQL_Base</th>
+            <th>SQL_Adv</th>
+            <th>HTML</th>
+            <th>CSS</th>
+        </tr>
+    `;
+    table.innerHTML = header;
+
+    users.forEach(user =>{
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${user.student_id}</td>
+            <td>${user.email}</td>
+            <td>${user.first_name}</td>
+            <td>${user.last_name}</td>
+            <td>${user.section}</td>
+            <td>${user.RM}</td>
+            <td>${user.ERD}</td>
+            <td>${user.RA}</td>
+            <td>${user.SQL_DDL}</td>
+            <td>${user.SQL_Base}</td>
+            <td>${user.SQL_Adv}</td>
+            <td>${user.HTML}</td>
+            <td>${user.CSS}</td>
+        `;
+        table.appendChild(row);
+    });
+
+    frame.appendChild(table);
+}
 
 // need to put users into the table
