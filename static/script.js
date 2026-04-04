@@ -191,7 +191,7 @@ const render_node = (node, container, root_data) => {
 
         const newChild = [
             "New Task", 
-            "Assignment", 
+            0, 
             [],
             [x + 200, y],
             0 
@@ -275,6 +275,14 @@ const render_node = (node, container, root_data) => {
 
         removeBtn.onmousedown = (e) => e.stopPropagation();
 
+        function publish_schema(){
+            fetch('/api/grade_schema', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(root_data)
+            });
+        };
+
         removeBtn.onclick = async () => {
             if (confirm(`Are you sure you want to delete "${node[0]}" and all its children?`)) {
                 
@@ -293,11 +301,7 @@ const render_node = (node, container, root_data) => {
 
                 removeNodeRecursive(root_data);
 
-                await fetch('/api/grade_schema', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(root_data)
-                });
+                publish_schema();
 
                 load_course_editor();
             }
@@ -314,7 +318,7 @@ const render_node = (node, container, root_data) => {
                         <span style="font-size: 11px; color: #555;">Max Points:</span>
                         <input type="number" class="edit-max-pts" 
                             style="font-size: 12px; width: 50px; border: 1px solid #ddd; border-radius: 3px; padding: 2px;" 
-                            value="${weightage || 0}">
+                            value="${node[1] || 0}">
                     </div>
 
                     <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -322,7 +326,7 @@ const render_node = (node, container, root_data) => {
                         <div style="display: flex; align-items: center;">
                             <input type="number" class="edit-weight-pct" 
                                 style="font-size: 12px; width: 50px; border: 1px solid #ddd; border-radius: 3px; padding: 2px;" 
-                                value="${node[5] || 0}">
+                                value="${node[4] || 0}">
                             <span style="font-size: 12px; font-weight: bold; margin-left: 3px;">%</span>
                         </div>
                     </div>
@@ -335,15 +339,18 @@ const render_node = (node, container, root_data) => {
         const weightPctInp = box.querySelector('.edit-weight-pct');
 
         nameInp.onchange = (e) => { 
-            node[0] = e.target.value; 
+            node[0] = e.target.value;
+            publish_schema();
         };
 
         maxPtsInp.onchange = (e) => { 
-            node[2] = parseFloat(e.target.value) || 0; 
+            node[1] = parseFloat(e.target.value) || 0; 
+            publish_schema();
         };
 
         weightPctInp.onchange = (e) => { 
-            node[5] = parseFloat(e.target.value) || 0; 
+            node[4] = parseFloat(e.target.value) || 0;
+            publish_schema();
         };
 
         [nameInp, maxPtsInp, weightPctInp].forEach(el => {
