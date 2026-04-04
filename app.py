@@ -100,7 +100,7 @@ def grade_schema():
 
         return jsonify(["Schema updated"])
     
-    default = ["Master", "Percentage", [], [300, 500], 100]
+    default = ["Master", 100, [], [300, 500], 100]
     return jsonify(all_schemas.get(class_id, default))
 
 

@@ -169,7 +169,7 @@ function drawAllStems(rootNode) {
 }
 
 const render_node = (node, container, root_data) => {
-    const [name, type, children, pos, weightage] = node;
+    const [name, max_points, children, pos, weightage] = node;
     const [x, y] = pos;
 
     const wrapper = document.createElement('div');
@@ -339,7 +339,7 @@ const render_node = (node, container, root_data) => {
         };
 
         maxPtsInp.onchange = (e) => { 
-            node[4] = parseFloat(e.target.value) || 0; 
+            node[2] = parseFloat(e.target.value) || 0; 
         };
 
         weightPctInp.onchange = (e) => { 
@@ -354,7 +354,7 @@ const render_node = (node, container, root_data) => {
     } else{
         box.innerHTML = `
             <input type="text" class="edit-name" style="font-size: 14px; font-weight: bold; width: 100%; border: none; background: transparent;" value="${name}">
-            <input type="text" class="edit-type" style="font-size: 12px; color: #666; width: 100%; border: none; background: transparent;" value="${type}">
+            <input type="text" class="edit-type" style="font-size: 12px; color: #666; width: 100%; border: none; background: transparent;" value="Total Pts"">
             <div style="display: flex; align-items: center; margin-top: 5px;">
                 <input type="number" class="edit-weight" style="font-size: 12px; font-weight: bold; width: 50px; border: 1px solid #ddd;" value="${weightage}">
                 <span style="font-size: 12px; font-weight: bold;">%</span>
