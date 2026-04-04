@@ -5,11 +5,6 @@ app = Flask(__name__)
 
 app.secret_key = 'TimTimTimSahur'
 
-current_courses = [ # these will be mapped to a specific user
-        {"code": "CSCA67", "name": "Discrete Mathematics"},
-        {"code": "MATA22", "name": "Linear Algebra I For Mathematical Sciences"}, # this will be automated later so no dupesnm
-    ]  
-
 course_codes_to_names = {
     "CSCA67": "Discrete Mathematics",
     "MATA22": "Linear Algebra I For Mathematical Sciences",
@@ -18,18 +13,14 @@ course_codes_to_names = {
 }
 
 @app.route('/')
-def index():
-    return render_template('main.html')
-
-# this resets the path to whatever you were on
-# when you reload the page
 @app.route('/main/<path:subpath>')
 def catch_all(subpath=None):
+    current_courses = session.get('current_courses', {})
     return render_template('main.html')
 
 @app.route('/api/courses')
 def class_selector():
-
+    current_courses = session.get('current_courses', {})
     return jsonify(current_courses) # we want to port these to JS for easy of use esp when sql..
 
 @app.route('/api/add_course', methods=['POST'])
@@ -42,7 +33,15 @@ def add_course():
     if course_code not in course_codes_to_names: # error case
         return jsonify(["Course does not exist"])
     
-    current_courses.append({"code": course_code, "name": course_codes_to_names[course_code]})
+    courses = session.get('current_courses', {})
+    
+    new_id = session.get('id_counter', 0) + 1
+    session['id_counter'] = new_id
+
+    str_v_id = str(new_id)
+    courses[str_v_id] = {"code": course_code, "name": course_codes_to_names[course_code]}
+    
+    session['current_courses'] = courses
     
     return jsonify(["Succesful course creation"])
 
@@ -50,16 +49,64 @@ def add_course():
 def remove_course():
     data = request.get_json()
     course_code = data.get('course_code', '').strip().upper() # map this to a name
+    course_id = str(data.get('id'))
 
     #user_id = session.get('user_id') # not used atm
     
-    current_courses.remove({"code": course_code, "name": course_codes_to_names[course_code]})
+    courses = session.get('current_courses', {})
+
+    popped = False
+
+    if course_id in courses:
+        courses.pop(course_id)
+        popped = True
     
-    return jsonify(["Successful course removal"])
+    session['current_courses'] = courses
+
+    if popped:
+        return jsonify(["Succesful course removal"])
+    
+    return jsonify(["Error in removing course"]), 404
+    
+
+@app.route('/api/select_course', methods=['GET', 'POST'])
+def select_course():
+    if (request.method == 'POST'):
+        data = request.get_json()
+        course_code = data.get('course_code', '').strip().upper()
+        course_id = data.get('id')
+        
+        session['course_editing'] = course_code
+        session['course_editing_id'] = course_id
+    
+        return jsonify(["Successful course selection"])
+    else:
+        current = session.get('course_editing', 'NONE')
+        current_id = session.get('course_editing_id', '-1')
+        return jsonify({"course_editing": current, "course_editing_id": current_id})
+    
+@app.route('/api/grade_schema', methods=['GET', 'POST'])
+def grade_schema():
+    class_id = str(session.get('course_editing_id'))
+    all_schemas = session.get('course_schemas', {})
+
+    if request.method == 'POST':
+        user_changes = request.get_json()
+
+        all_schemas[class_id] = user_changes
+        session['course_schemas'] = all_schemas
+
+        print(user_changes)
+
+        return jsonify(["Schema updated"])
+    
+    default = ["Master", "Percentage", [], [300, 500], 100]
+    return jsonify(all_schemas.get(class_id, default))
+
 
 #profs can see users data from here
-@app.route('/api/users')
-def get_users():
+@app.route('/api/grades')
+def get_grades():
     conn = sqlite3.connect("app.db")
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
@@ -71,7 +118,6 @@ def get_users():
     conn.close()
 
     return jsonify([dict(row) for row in rows])
-
 
 def init_db():
     conn = sqlite3.connect("app.db")
