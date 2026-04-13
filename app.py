@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session, render_template
+from flask import Flask, request, jsonify, session, render_template, redirect
 import sqlite3
 
 app = Flask(__name__)
@@ -28,8 +28,29 @@ def compute_final_grades(node, student_row):
 @app.route('/')
 @app.route('/main/<path:subpath>')
 def catch_all(subpath=None):
+    if not session.get('logged_in'):
+        return render_template('login.html')
     current_courses = session.get('current_courses', {})
     return render_template('main.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        password = request.form.get('password');
+        if(password == "TimTimTimSahur"):
+            session['logged_in'] = True;
+            return redirect('/')
+        return "wrong password, are you a hacker?!"
+    else:
+        return render_template("login.html")
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
+
 
 @app.route('/api/courses')
 def class_selector():
@@ -141,16 +162,14 @@ def get_grades():
         student = dict(row);
     
         if schema:#there is a schema defined
-            final_grade = compute_grade(schema, student);
+            final_grade = compute_final_grades(schema, student);
         else:#no schema yet
             final_grade = 0;
         student['final_grade'] = final_grade;#add final grade to the data
         results.append(student);
 
 
-
-
-    return jsonify([dict(row) for row in rows])
+    return jsonify(results);
 
 def init_db():
     conn = sqlite3.connect("app.db")
@@ -185,14 +204,19 @@ def init_db():
     cur.execute("DELETE FROM users;")
 
     #testing input into users
-    cur.execute("""
-                INSERT INTO users (crowdmark_id, score_url, email, first_name, last_name, student_id, section)
-    VALUES
-    (1, 'url1', 'tim@example.com', 'Tim', 'Tester', '1000000000', 'L01'),
-    (2, 'url2', 'amy@example.com', 'Amy', 'Anderson', '1000000001', 'L01'),
-    (3, 'url3', 'bob@example.com', 'Bob', 'Brown', '1000000002', 'L02');
-            """)
-    conn.commit()
+    try:
+        cur.execute("""
+                    INSERT INTO users (crowdmark_id, score_url, email, first_name, last_name, student_id, section, RM, ERD, RA, SQL_DDL, SQL_Base, SQL_Adv, HTML, CSS)
+        VALUES
+        (1, 'url1', 'tim@example.com', 'Tim', 'Tester', '1000000000', 'L01', 85.5, 90.0, 88.5, 92.0, 80.0, 75.5, 88.0, 91.0),
+        (2, 'url2', 'amy@example.com', 'Amy', 'Anderson', '1000000001', 'L01', 92.0, 88.5, 95.0, 89.5, 87.0, 92.5, 94.0, 90.0),
+        (3, 'url3', 'bob@example.com', 'Bob', 'Brown', '1000000002', 'L02', 78.5, 82.0, 80.5, 85.0, 79.0, 81.5, 76.0, 83.0);
+                """)
+        conn.commit()
+        print("Sample data inserted successfully")
+    except Exception as e:
+        print(f"Error inserting data: {e}")
+    
     conn.close()
 
 print("changes")
