@@ -12,6 +12,19 @@ course_codes_to_names = {
     "CSCB20": "Introduction To Databases",
 }
 
+def compute_final_grades(node, student_row):
+    name, max_points, children, pos, weight = node;
+    if not children:##i.e it is a skill (HTML, CSS, ...)
+        raw_score = student_row.get(name, 0);
+        if(max_points == 0):
+            return 0 ## no points for this skill
+        return (raw_score / max_points) * weight
+    else:##i.e. it is a category that contains skills
+        total = 0;
+        for child in children:
+            total += compute_final_grades(child, student_row)
+    return total;
+
 @app.route('/')
 @app.route('/main/<path:subpath>')
 def catch_all(subpath=None):
@@ -117,6 +130,26 @@ def get_grades():
     
     conn.close()
 
+
+
+    class_id = str(session.get('course_editing_id'))
+    schema = session.get('course_schemas', {}).get(class_id)
+
+    results = [];
+
+    for row in rows:
+        student = dict(row);
+    
+        if schema:#there is a schema defined
+            final_grade = compute_grade(schema, student);
+        else:#no schema yet
+            final_grade = 0;
+        student['final_grade'] = final_grade;#add final grade to the data
+        results.append(student);
+
+
+
+
     return jsonify([dict(row) for row in rows])
 
 def init_db():
@@ -166,5 +199,4 @@ print("changes")
 
 if __name__ == "__main__":
     init_db()
->>>>>>> 051a0b6b23ec7b3faefeea00445c0256aec6ee65
     app.run(debug=True)
