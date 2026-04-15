@@ -471,6 +471,7 @@ async function load_grades(){
             <th>SQL_Adv</th>
             <th>HTML</th>
             <th>CSS</th>
+            <th>Final Grade</th>
         </tr>
     `;
     table.innerHTML = header;
@@ -491,6 +492,7 @@ async function load_grades(){
             <td>${user.SQL_Adv}</td>
             <td>${user.HTML}</td>
             <td>${user.CSS}</td>
+            <td>${user.final_grade}</td> 
         `;
         table.appendChild(row);
     });

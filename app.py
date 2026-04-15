@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session, render_template, redirect
+from flask import Flask, request, jsonify, session, render_template
 import sqlite3
 
 app = Flask(__name__)
@@ -40,17 +40,10 @@ def login():
         password = request.form.get('password');
         if(password == "TimTimTimSahur"):
             session['logged_in'] = True;
-            return redirect('/')
+            return render_template('main.html')
         return "wrong password, are you a hacker?!"
     else:
         return render_template("login.html")
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/')
-
-
 
 @app.route('/api/courses')
 def class_selector():
@@ -151,8 +144,6 @@ def get_grades():
     
     conn.close()
 
-
-
     class_id = str(session.get('course_editing_id'))
     schema = session.get('course_schemas', {}).get(class_id)
 
@@ -183,39 +174,28 @@ def init_db():
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
         student_id TEXT NOT NULL UNIQUE,
-        section TEXT NOT NULL
+        section TEXT NOT NULL,
+        RM DECIMAL(5, 2) DEFAULT 0.00,
+        ERD DECIMAL(5, 2) DEFAULT 0.00,
+        RA DECIMAL(5, 2) DEFAULT 0.00,
+        SQL_DDL DECIMAL(5, 2) DEFAULT 0.00,
+        SQL_Base DECIMAL(5, 2) DEFAULT 0.00,
+        SQL_Adv DECIMAL(5, 2) DEFAULT 0.00,
+        HTML DECIMAL(5, 2) DEFAULT 0.00,
+        CSS DECIMAL(5, 2) DEFAULT 0.00
     );
                 """)
-
-    # working for B20 format currently
-
-    skills = ["RM", "ERD", "RA", "SQL_DDL", "SQL_Base", "SQL_Adv", "HTML", "CSS"]
-
-    for i in skills:
-        try:
-            cur.execute(f"""
-            ALTER TABLE users ADD COLUMN {i} DECIMAL(5, 2) DEFAULT 0.00;
-                        """)
-        except:
-            pass
-
-
     #clear previous data
-    cur.execute("DELETE FROM users;")
+    cur.execute("DELETE FROM users;")#we need this bc of unique constraint for now
 
     #testing input into users
-    try:
-        cur.execute("""
-                    INSERT INTO users (crowdmark_id, score_url, email, first_name, last_name, student_id, section, RM, ERD, RA, SQL_DDL, SQL_Base, SQL_Adv, HTML, CSS)
-        VALUES
-        (1, 'url1', 'tim@example.com', 'Tim', 'Tester', '1000000000', 'L01', 85.5, 90.0, 88.5, 92.0, 80.0, 75.5, 88.0, 91.0),
-        (2, 'url2', 'amy@example.com', 'Amy', 'Anderson', '1000000001', 'L01', 92.0, 88.5, 95.0, 89.5, 87.0, 92.5, 94.0, 90.0),
-        (3, 'url3', 'bob@example.com', 'Bob', 'Brown', '1000000002', 'L02', 78.5, 82.0, 80.5, 85.0, 79.0, 81.5, 76.0, 83.0);
-                """)
-        conn.commit()
-        print("Sample data inserted successfully")
-    except Exception as e:
-        print(f"Error inserting data: {e}")
+    cur.execute("""
+                INSERT INTO users (crowdmark_id, score_url, email, first_name, last_name, student_id, section, RM, ERD, RA, SQL_DDL, SQL_Base, SQL_Adv, HTML, CSS)
+    VALUES
+    (1, 'url1', 'tim@example.com', 'Tim', 'Tester', '1000000000', 'L01', 85.5, 90.0, 88.5, 92.0, 80.0, 75.5, 88.0, 91.0),
+    (2, 'url2', 'amy@example.com', 'Amy', 'Anderson', '1000000001', 'L01', 92.0, 88.5, 95.0, 89.5, 87.0, 92.5, 94.0, 90.0),
+    (3, 'url3', 'bob@example.com', 'Bob', 'Brown', '1000000002', 'L02', 78.5, 82.0, 80.5, 85.0, 79.0, 81.5, 76.0, 83.0);
+            """)
     
     conn.close()
 
