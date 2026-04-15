@@ -57,6 +57,12 @@
             </table>
         </div>
 
+        <form action="/api/logout" method="POST">
+            <button type="submit" id="logout" class="logout course-button">
+                log out
+            </button>
+        </form>
+
         <script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
 </html>

@@ -81,6 +81,44 @@
     border-radius: 30px;
 }
 
+.logout{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000; 
+    padding: 10px 50px;
+    font-size: 15px;
+    background-color: rgb(220, 20, 60);
+}
+
+.inputbtn {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
+    width: 15%;
+    background-color: #00a8a8;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.inputform {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    width: 320px;
+    margin: 40px auto;
+    flex-direction: column;
+    align-items: left;
+    text-align: center;
+}
+
 .selected-btn{
     background-color:rgb(4, 73, 114) !important;
     border-radius: 0px !important;
@@ -114,8 +152,11 @@
 
 .course-button:hover{
     transform: scale(1.05);
-    padding: 16px 125px;
     background-color:rgb(27, 122, 122);
+}
+
+.logout:hover{
+    background-color:rgb(129, 0, 0);
 }
 
 .link-button:hover{
