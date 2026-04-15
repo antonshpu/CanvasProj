@@ -50,6 +50,7 @@ def class_selector():
     current_courses = session.get('current_courses', {})
     return jsonify(current_courses) # we want to port these to JS for easy of use esp when sql..
 
+
 @app.route('/api/add_course', methods=['POST'])
 def add_course():
     data = request.get_json()
