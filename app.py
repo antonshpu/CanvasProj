@@ -3,7 +3,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-app.secret_key = 'TimTimTimSahur'
+app.secret_key = 'TEMPLATE' # placeholder for public view
 
 def compute_final_grades(node, student_row):
     name, max_points, children, pos, weight = node
